@@ -38,3 +38,45 @@ export function deleteCourse(courseId) {
     .then(handleResponse)
     .catch(handleError);
 }
+
+let promise1000 = new Promise(function(resolve, reject) {
+  // the function is executed automatically when the promise is constructed
+
+  // after 1 second signal that the job is done with the result "done"
+  setTimeout(() => resolve("done1000"), 1000);
+});
+
+let promise3000 = new Promise(function(resolve, reject) {
+  // the function is executed automatically when the promise is constructed
+
+  // after 1 second signal that the job is done with the result "done"
+  setTimeout(() => resolve("done3000"), 3000);
+});
+
+let promise8000 = new Promise(function(resolve, reject) {
+  // the function is executed automatically when the promise is constructed
+
+  // after 1 second signal that the job is done with the result "done"
+  setTimeout(() => resolve("done8000"), 8000);
+});
+
+let promise15000 = new Promise(function(resolve, reject) {
+  // the function is executed automatically when the promise is constructed
+
+  // after 1 second signal that the job is done with the result "done"
+  setTimeout(() => resolve("done15000"), 15000);
+});
+
+export function callPromise() {
+  //let resPromise = await promise1();
+  /*
+  promise1000.then((resPromise) => console.log("resPromise: " + resPromise));
+  promise3000.then((resPromise) => console.log("resPromise: " + resPromise));
+  */
+
+  Promise.all([promise1000, promise3000, promise8000, promise15000]).then((values) => {
+    console.log(values);
+  });
+
+  promise8000.then((resPromise) => console.log("resPromise: " + resPromise));
+}

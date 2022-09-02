@@ -1,6 +1,12 @@
 import React from 'react';
-
+import { callPromise } from '../api/courseApi';
 class AboutPage extends React.Component {
+
+    componentDidMount() {
+        callPromise();
+    }
+
+
     render() {
         return (
             <>
