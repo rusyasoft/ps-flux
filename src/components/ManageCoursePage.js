@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Prompt } from 'react-router-dom';
 import CourseForm from "./CourseForm";
-import * as courseApi from "../api/courseApi";
 import { toast } from 'react-toastify';
+import courseStore from "../stores/courseStore";
+import * as courseActions from '../actions/courseActions';
 
 const ManageCoursePage = props => {
     const [ errors, setErrors ] = useState({});
+    const [ courses, setCourses ] = useState(courseStore.getCourses());
     const [ course, setCourse ] = useState({
         id: null,
         slug: "",
@@ -15,12 +17,21 @@ const ManageCoursePage = props => {
     });
 
     useEffect( () => {
+        courseStore.addChangeListener(onChange);
         const slug = props.match.params.slug; // from the path `/courses/:slug`
-        if (slug) {
-            courseApi.getCourseBySlug(slug)
-                .then( _course => setCourse(_course));
+        if (courses.length === 0) {
+            courseActions.loadCourses();
+        } else if (slug) {
+            setCourse(courseStore.getCourseBySlug(slug));
+            // courseApi.getCourseBySlug(slug)
+            //     .then( _course => setCourse(_course));
         }
-    }, [props.match.params.slug]);
+        return () => courseStore.removeChangeListener(onChange);
+    }, [props.match.params.slug, courses.length]);
+
+    function onChange() {
+        setCourses(courseStore.getCourses());
+    }
 
     function handleChange({target}) {
         const updatedCourse = {...course, [target.name]: target.value};
@@ -43,10 +54,15 @@ const ManageCoursePage = props => {
         event.preventDefault();
         if (!formIsValid()) return;
 
-        courseApi.saveCourse(course).then( () => {
+        
+        courseActions.saveCourse(course).then( () => {
             props.history.push("/courses");
             toast.success("Course saved!");
         });
+        // courseApi.saveCourse(course).then( () => {
+        //     props.history.push("/courses");
+        //     toast.success("Course saved!");
+        // });
     }
 
     return (
